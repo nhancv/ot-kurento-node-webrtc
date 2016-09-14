@@ -23,7 +23,6 @@ html {
 
 body {
 	padding-top: 40px;
-	body
 }
 
 video,#console {
@@ -76,4 +75,17 @@ div.dragged {
 	cursor: all-scroll !important;
 	border-color: blue !important;
 	z-index: 10 !important;
+}
+
+@media screen and (max-width: 481px) {
+	.phone-tag {
+		visibility: hidden !important;
+		display: none !important;
+	}
+
+	#videoBig, #videoOutput {
+		width: 100%;
+		height: auto;
+	}
+
 }

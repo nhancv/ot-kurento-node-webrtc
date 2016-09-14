@@ -76,22 +76,24 @@ function setCallState(nextState) {
 }
 
 window.onload = function() {
-	console = new Console();
+	if (screen.width > 481) {
+		console = new Console();
+	}
 	setRegisterState(NOT_REGISTERED);
 	var drag = new Draggabilly(document.getElementById('videoSmall'));
 	videoInput = document.getElementById('videoInput');
 	videoOutput = document.getElementById('videoOutput');
 	document.getElementById('name').focus();
 
-	document.getElementById('register').addEventListener('click', function() {
-		register();
-	});
-	document.getElementById('call').addEventListener('click', function() {
-		call();
-	});
-	document.getElementById('terminate').addEventListener('click', function() {
-		stop();
-	});
+	// document.getElementById('register').addEventListener('click', function() {
+	// 	register();
+	// });
+	// document.getElementById('call').addEventListener('click', function() {
+	// 	call();
+	// });
+	// document.getElementById('terminate').addEventListener('click', function() {
+	// 	stop();
+	// });
 }
 
 window.onbeforeunload = function() {
