@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
+    <file url="file://$PROJECT_DIR$/kurento-hello-world" libraries="{kurento-tutorial-node/kurento-hello-world/node_modules}" />
+    <file url="file://$PROJECT_DIR$/kurento-magic-mirror" libraries="{kurento-tutorial-node/kurento-magic-mirror/node_modules}" />
     <file url="file://$PROJECT_DIR$/kurento-one2many-call" libraries="{kurento-tutorial-node/kurento-one2many-call/node_modules}" />
     <file url="file://$PROJECT_DIR$/kurento-one2one-call" libraries="{kurento-tutorial-node/kurento-one2one-call/node_modules}" />
   </component>
