@@ -26,7 +26,7 @@ var https = require('https');
 
 var argv = minimist(process.argv.slice(2), {
     default: {
-		as_uri: 'https://localhost:7002/',
+		as_uri: 'https://localhost:6008/',
         ws_uri: 'ws://localhost:8888/kurento'
     }
 });

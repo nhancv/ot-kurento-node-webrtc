@@ -26,7 +26,7 @@ var https = require('https');
 
 var argv = minimist(process.argv.slice(2), {
   default: {
-      as_uri: "https://localhost:7003/",
+      as_uri: "https://localhost:6009/",
       ws_uri: "ws://localhost:8888/kurento"
   }
 });
@@ -234,7 +234,7 @@ wss.on('connection', function(ws) {
 
     ws.on('message', function(_message) {
         var message = JSON.parse(_message);
-        console.log('Connection ' + sessionId + ' received message ', message);
+        console.log('Connection ' + sessionId + ' sent message ', message);
 
         switch (message.id) {
         case 'register':
