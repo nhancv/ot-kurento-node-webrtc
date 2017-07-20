@@ -7,8 +7,6 @@
 
 Copyright © 2013-2016 [Kurento]. Licensed under [Apache 2.0 License].
 
-Kurento tutorial for Node.js
-============================
 # Install Kurento media server
 
 Kurento Media Server (KMS) has to be installed on Ubuntu 14.04 LTS (64 bits).
