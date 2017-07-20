@@ -26,7 +26,7 @@ var https = require('https');
 
 var argv = minimist(process.argv.slice(2), {
   default: {
-      as_uri: "https://localhost:6009/",
+      as_uri: "https://localhost:6008/",
       ws_uri: "ws://localhost:8888/kurento"
   }
 });
@@ -390,7 +390,7 @@ function call(callerId, to, from, sdpOffer) {
     var rejectCause = 'User ' + to + ' is not registered';
     if (userRegistry.getByName(to)) {
         var callee = userRegistry.getByName(to);
-        caller.sdpOffer = sdpOffer
+        caller.sdpOffer = sdpOffer;
         callee.peer = from;
         caller.peer = to;
         var message = {
