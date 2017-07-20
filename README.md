@@ -7,161 +7,133 @@
 
 Copyright © 2013-2016 [Kurento]. Licensed under [Apache 2.0 License].
 
-Kurento tutorial for Node.js
-============================
-Examples on usage of the Kurento Node.js Client.
+# Install Kurento media server
 
-This project contains a set of simple applications built with JavaScript Kurento
-Client APIs ([kurento-client-js] and [kurento-utils-js]) for [Node.js].
+Kurento Media Server (KMS) has to be installed on Ubuntu 14.04 LTS (64 bits).
+In order to install the latest stable Kurento Media Server version (6.+) you have to type the following commands:
 
-The source code of this project can be cloned from the [GitHub repository].
-
-Installation instructions
--------------------------
-
-Be sure to have installed [Node.js] in your system:
-
-```bash
-curl -sL https://deb.nodesource.com/setup_4.x | sudo bash -
-sudo apt-get install -y nodejs
+With trusty ubuntu version
+```
+echo "deb http://ubuntu.kurento.org trusty kms6" | sudo tee /etc/apt/sources.list.d/kurento.list
+wget -O - http://ubuntu.kurento.org/kurento.gpg.key | sudo apt-key add -
+sudo apt-get update
+sudo apt-get install kurento-media-server-6.0
 ```
 
-It is recommended to update NPM to the latest version:
-
-```bash
-sudo npm install npm -g
+With xenial ubuntu version
+```
+echo "deb http://ubuntu.kurento.org xenial kms6" | sudo tee /etc/apt/sources.list.d/kurento.list
+wget -O - http://ubuntu.kurento.org/kurento.gpg.key | sudo apt-key add -
+sudo apt-get update
+sudo apt-get install kurento-media-server-6.0
 ```
 
+Disable ufw
+`sudo ufw disable`
 
-Install node modules and bower components
+Instance trigger
+Start
+`sudo service kurento-media-server-6.0 start`
+Stop
+`sudo service kurento-media-server-6.0 stop`
 
-```bash
+#Install Kurento module
+```
+sudo apt-get install kms-pointerdetector-6.0
+sudo apt-get install kms-chroma-6.0
+sudo apt-get install kms-crowddetector-6.0
+sudo apt-get install kms-platedetector-6.0
+sudo service kurento-media-server restart
+```
+
+Install node
+```
+sudo apt-get install curl
+curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+sudo apt-get install nodejs
+sudo npm install -g n
+sudo n lts
+source ~/.bash_aliases
+ 
+sudo npm install -g bower
+```
+
+Run Example
+* WITH PROJECT EXIST server.js FILE
+```
+git clone https://github.com/nhancv/ot-kurento-node-webrtc.git 
+cd to /webrtc_server/kurento/<demo_dir>
 npm install
+node server.js
+```
+Issue when install server-app on vps with root account, sometimes bower not work => frontend js not working completely.
+
+Solved: cd to static folder and install bowser dependencies manually
+`cd /webrtc_server/kurento/<demo_dir>/static && bower --allow-root install`
+
+> These instructions work only if Kurento Media Server is up and running in the same machine as the tutorial. However, it is possible to connect to a remote KMS in other machine, simply adding the argument ws_uri to the npm execution command, as follows:
+`npm start -- --ws_uri=ws://kms_host:kms_port/kurento`
+In this case you need to use npm version 2. To update it you can use this command:
+`sudo npm install npm -g`
+
+`Default kms_port: 8888`
+
+
+* WITH PROJECT WITHOUT server.js FILE
+```
+sudo npm install -g http-server
+bower install
+ ```
+ 
+Then, in each demo folder execute this command:
+`http-server -p 8443 -S -C keys/server.crt -K keys/server.key`
+ 
+Finally, open https://localhost:8443/ in your browser to access to the demo.
+ 
+Optional parameters
+https://example.com/index.html?ws_uri=wss://example.org/kurento
+ 
+ 
+All demos accept following parameters:
+ws_uri: the WebSocket Kurento MediaServer endpoint. By default it connects to a Kurento MediaServer instance listening on the port 8433 on the same machine where it's being hosted the demo. The KMS must allow WSS (WebSocket Secure).
+ 
+ice_servers: the TURN and STUN servers to use, formatted as a JSON string holding an array of RTCIceServerobjects (the same structure used when configuring a PeerConnection object), or an empty array to disabled them (this is faster and more reliable when doing tests on a local machine or LAN network). By default it use some random servers from a pre-defined list.
+`https://example.com/index.html?ice_servers=[{"urls":"stun:stun1.example.net"},{"urls":"stun:stun2.example.net"}]
+https://example.com/index.html?ice_servers=[{"urls":"turn:turn.example.org","username":"user","credential":"myPassword"}]
+` 
+Other parameters specific to each demo can be found defined at the top of their `index.js` file.
+Securing Kurento Applications
+First, you need to change the configuration file of Kurento Media Server, i.e.`/etc/kurento/kurento.conf.json`, uncommenting the following lines:
+```
+ "secure": {
+	  "port": 8433,
+	  "certificate": "defaultCertificate.pem",
+	  "password": ""
+	},
 ```
 
-Run the application and have fun ...
-
+`sudo apt-get install gnutls-bin`
+ 
 ```bash
-npm start
+
+certtool --generate-privkey --outfile defaultCertificate.pem
+echo 'organization = your organization name' > certtool.tmpl
+certtool --generate-self-signed --load-privkey defaultCertificate.pem \
+   --template certtool.tmpl >> defaultCertificate.pem
+
+```
+ 
+```
+sudo cp defaultCertificate.pem /etc/kurento/
+sudo chown kurento /etc/kurento/defaultCertificate.pem
+sudo service kurento-media-server-6.0 restart
 ```
 
-Parameters
+Go to https://localhost:8433 for self-sign
+Install https://chrome.google.com/webstore/detail/web-socket-client/lifhekgaodigcpmnakfhaaaboididbdn to check connection
+
+
 ----------
-
-The Node.js server accept an optional parameter with the URI of the MediaServer
-WebSocket endpoint, being set by default at ws://localhost:8888/kurento. You can
-define its value by using the ```ws_uri``` flag:
-
-```bash
-npm start -- --ws_uri=ws://example.com:8888/kurento
-```
-
-It also accept an optional parameter with the URI of the application server root
-that will serve the overlay image, being by default at https://localhost:8443/.
-You can define its value by using the ```as_uri``` flag:
-
-```bash
-npm start -- --as_uri=https://example.org:8443/
-```
-
-For example, if you would like to start the node server in the localhost using
-the port 8081, then the command is the following:
-
-```bash
-npm start -- --as_uri=https://localhost:8081/
-```
-
-Please notice that the double dash separator (```--```) is [on
-purpose](https://www.npmjs.org/doc/cli/npm-run-script.html#description).
-
-
-Kurento
-=======
-
-What is Kurento
----------------
-
-Kurento is an open source software project providing a platform suitable
-for creating modular applications with advanced real-time communication
-capabilities. For knowing more about Kurento, please visit the Kurento
-project website: http://www.kurento.org.
-
-Kurento is part of [FIWARE]. For further information on the relationship of
-FIWARE and Kurento check the [Kurento FIWARE Catalog Entry]
-
-Kurento is part of the [NUBOMEDIA] research initiative.
-
-Documentation
--------------
-
-The Kurento project provides detailed [documentation] including tutorials,
-installation and development guides. A simplified version of the documentation
-can be found on [readthedocs.org]. The [Open API specification] a.k.a. Kurento
-Protocol is also available on [apiary.io].
-
-Source
-------
-
-Code for other Kurento projects can be found in the [GitHub Kurento Group].
-
-News and Website
-----------------
-
-Check the [Kurento blog]
-Follow us on Twitter @[kurentoms].
-
-Issue tracker
--------------
-
-Issues and bug reports should be posted to the [GitHub Kurento bugtracker]
-
-Licensing and distribution
---------------------------
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-Contribution policy
--------------------
-
-You can contribute to the Kurento community through bug-reports, bug-fixes, new
-code or new documentation. For contributing to the Kurento community, drop a
-post to the [Kurento Public Mailing List] providing full information about your
-contribution and its value. In your contributions, you must comply with the
-following guidelines
-
-* You must specify the specific contents of your contribution either through a
-  detailed bug description, through a pull-request or through a patch.
-* You must specify the licensing restrictions of the code you contribute.
-* For newly created code to be incorporated in the Kurento code-base, you must
-  accept Kurento to own the code copyright, so that its open source nature is
-  guaranteed.
-* You must justify appropriately the need and value of your contribution. The
-  Kurento project has no obligations in relation to accepting contributions
-  from third parties.
-* The Kurento project leaders have the right of asking for further
-  explanations, tests or validations of any code contributed to the community
-  before it being incorporated into the Kurento code-base. You must be ready to
-  addressing all these kind of concerns before having your code approved.
-
-Support
--------
-
-The Kurento project provides community support through the  [Kurento Public
-Mailing List] and through [StackOverflow] using the tags *kurento* and
-*fiware-kurento*.
-
-Before asking for support, please read first the [Kurento Netiquette Guidelines]
-
 [documentation]: http://www.kurento.org/documentation
 [FIWARE]: http://www.fiware.org
 [GitHub Kurento bugtracker]: https://github.com/Kurento/bugtracker/issues
